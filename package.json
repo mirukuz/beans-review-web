@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@auth0/auth0-vue": "^2.3.3",
     "nuxt": "^3.12.4",
+    "nuxt-graphql-request": "^8.1.0",
     "vue": "latest"
   },
   "devDependencies": {
