@@ -5,6 +5,10 @@ const nav = [
     to: '/',
   },
   {
+    label: 'Login',
+    to: '/login',
+  },
+  {
     label: 'External',
     to: '/external',
   },
