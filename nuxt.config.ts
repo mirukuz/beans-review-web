@@ -9,9 +9,7 @@ export default defineNuxtConfig({
       Auth0RedirectUri: process.env.AUTH0_REDIRECT_URI,
     }
   },
-  extends: ["@nuxt/examples-ui"],
-
-  modules: ["nuxt-graphql-request", "nuxt-graphql-request"],
+  modules: ["nuxt-graphql-request", "nuxt-graphql-request", "@nuxt/ui"],
   build: {
     transpile: ["nuxt-graphql-request"],
   },

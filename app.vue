@@ -1,31 +1,48 @@
 <script setup lang="ts">
-const nav = [
+const navLeft = [
   {
-    label: 'Home',
-    to: '/',
+    label: 'Bean',
+    to: '/bean',
   },
+  {
+    label: 'Roaster',
+    to: '/roaster',
+  }
+]
+const navRight = [
   {
     label: 'Login',
     to: '/login',
-  },
-  {
-    label: 'External',
-    to: '/external',
-  },
-  {
-    label: 'Component',
-    to: '/component',
-  },
+  }
 ]
 </script>
 
 <template>
-  <NuxtExample dir="features/data-fetching" :nav="nav">
-    <!-- Show Nuxt progress indicator on page change -->
-    <NuxtLoadingIndicator />
-    <NuxtPage />
-  </NuxtExample>
+  <div>
+    <!-- Header Section -->
+    <UContainer class="py-4">
+      <nav class="flex justify-between items-center">
+        <div class="flex space-x-4">
+          <div v-for="item in navLeft" :key="item.label">
+            <UButton :to="item.to">{{ item.label }}</UButton>
+          </div>
+        </div>
+        <div class="flex space-x-4">
+          <div v-for="item in navRight" :key="item.label">
+            <UButton :to="item.to">{{ item.label }}</UButton>
+          </div>
+        </div>
+        <!-- <div>
+          <ColorScheme>
+            <USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" />
+          </ColorScheme>
+        </div> -->
+      </nav>
+    </UContainer>
+
+    <!-- Main Section -->
+    <UContainer class="my-10 text-center">
+      <NuxtPage />
+    </UContainer>
+  </div>
 </template>
-
-
-<!-- learn abt https://nuxt.com/docs/examples/features/data-fetching -->

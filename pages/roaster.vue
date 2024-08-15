@@ -4,15 +4,20 @@ const { $graphql } = useNuxtApp();
 // import { useAuth0 } from '@auth0/auth0-vue'
 const query = gql`
 query planets {
-  feed {
+  allRoasters {
     id
-    title
-    content
-    published
-    author {
-      id
+    name
+    address
+    beans {
       name
-      email
+      process
+      review {
+        content
+        author {
+          id
+          name
+        }
+      }
     }
   }
 }
