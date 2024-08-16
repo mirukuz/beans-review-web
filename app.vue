@@ -1,4 +1,27 @@
 <script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+// Composition API
+const auth0 = import.meta.client ? useAuth0() : undefined
+
+const isAuthenticated = computed(() => {
+  return auth0?.isAuthenticated.value
+})
+
+const login = () => {
+  auth0?.checkSession()
+  if (!auth0?.isAuthenticated.value) {
+    auth0?.loginWithRedirect({
+      appState: {
+        target: useRoute().path,
+      },
+    })
+  }
+}
+
+const logout = () => {
+  navigateTo('/')
+  auth0?.logout()
+}
 const navLeft = [
   {
     label: 'Bean',
@@ -7,12 +30,6 @@ const navLeft = [
   {
     label: 'Roaster',
     to: '/roaster',
-  }
-]
-const navRight = [
-  {
-    label: 'Login',
-    to: '/login',
   }
 ]
 </script>
@@ -28,9 +45,14 @@ const navRight = [
           </div>
         </div>
         <div class="flex space-x-4">
-          <div v-for="item in navRight" :key="item.label">
-            <UButton :to="item.to">{{ item.label }}</UButton>
-          </div>
+          <UButton>
+            <a v-if="!isAuthenticated" @click="login">
+              <slot>Log In</slot>
+            </a>
+            <a v-else @click="logout">
+              <slot>Log Out</slot>
+            </a>
+          </UButton>
         </div>
         <!-- <div>
           <ColorScheme>

@@ -8,12 +8,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     authorizationParams: { redirect_uri: `${config.public.Auth0RedirectUri}`, }
   })
 
-  if (process.client) {
+  if (import.meta.client) {
     nuxtApp.vueApp.use(auth0)
   }
 
   addRouteMiddleware('auth', () => {
-    if (process.client) {
+    if (import.meta.client) {
       auth0.checkSession()
       if (!auth0.isAuthenticated.value) {
         auth0.loginWithRedirect({
