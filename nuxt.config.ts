@@ -7,19 +7,8 @@ export default defineNuxtConfig({
       Auth0ClientId: process.env.AUTH0_CLIENT_ID,
       Auth0Domain: process.env.AUTH0_DOMAIN,
       Auth0RedirectUri: process.env.AUTH0_REDIRECT_URI,
+      GQL_HOST: 'http://127.0.0.1:4000'
     }
   },
-  modules: ["nuxt-graphql-request", "nuxt-graphql-request", "@nuxt/ui"],
-  build: {
-    transpile: ["nuxt-graphql-request"],
-  },
-
-  graphql: {
-    clients: {
-      default: {
-        endpoint: "http://127.0.0.1:4000",
-        options: {},
-      },
-    },
-  },
+  modules: ["nuxt-graphql-client", "@nuxt/ui"],
 });

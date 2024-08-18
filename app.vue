@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue'
+import { NuxtLink } from '#components'
 // Composition API
 const auth0 = import.meta.client ? useAuth0() : undefined
 
@@ -25,11 +26,11 @@ const logout = () => {
 const navLeft = [
   {
     label: 'Bean',
-    to: '/bean',
+    to: '/beans',
   },
   {
     label: 'Roaster',
-    to: '/roaster',
+    to: '/roasters',
   }
 ]
 </script>
@@ -44,6 +45,9 @@ const navLeft = [
             <UButton :to="item.to">{{ item.label }}</UButton>
           </div>
         </div>
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+          <a href="/" class="text-xl font-bold">Bean Reviews</a>
+        </div>
         <div class="flex space-x-4">
           <UButton>
             <a v-if="!isAuthenticated" @click="login">
@@ -54,13 +58,13 @@ const navLeft = [
             </a>
           </UButton>
         </div>
-        <!-- <div>
-          <ColorScheme>
-            <USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" />
-          </ColorScheme>
-        </div> -->
       </nav>
     </UContainer>
+    <!-- <div>
+      <ColorScheme>
+        <USelect v-model="$colorMode.preference" :options="['system', 'light', 'dark']" />
+      </ColorScheme>
+    </div> -->
 
     <!-- Main Section -->
     <UContainer class="my-10 text-center">

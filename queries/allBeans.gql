@@ -1,0 +1,14 @@
+query allBeans {
+  allBeans {
+    id
+    name
+    photo
+    review {
+      id
+      content
+      author {
+        name
+      }
+    }
+  }
+}

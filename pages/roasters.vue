@@ -1,34 +1,20 @@
 <script setup lang="ts">
-import { gql } from 'nuxt-graphql-request/utils';
-const { $graphql } = useNuxtApp();
 // import { useAuth0 } from '@auth0/auth0-vue'
-const query = gql`
-query planets {
-  allRoasters {
-    id
-    name
-    address
-    beans {
-      name
-      process
-      review {
-        content
-        author {
-          id
-          name
-        }
-      }
-    }
-  }
-}
-`;
 // const id = ref(1)
 // const { isAuthenticated, isLoading, user, loginWithRedirect, logout } = useAuth0()
 // const { data: product, pending, error } = await useFetch(() => `https://dummyjson.com/products/${id.value}`)
-const { data } = await useAsyncData('planets', async () => {
-  const data = await $graphql.default.request(query);
-  return data;
-});
+const { data, error, pending, refresh } = await useAsyncGql({
+  operation: 'allRoasters',
+  // variables: { limit: 15 },
+  options: {
+    transform: (data) => data,
+  }
+})
+
+if (error.value) {
+  // eslint-disable-next-line no-console
+  console.error(error.value)
+}
 /* Same as:
 const { data: product, pending, error } = await useAsyncData(() => {
   return $fetch(`https://dummyjson.com/products/${id.value}`)
@@ -50,14 +36,21 @@ const { data: product, pending, error } = await useAsyncData(() => {
 
 <template>
   <div class="flex flex-col gap-2">
-    <pre>
-      <code>DATA: {{ data }}</code>
-    </pre>
-    <!-- <pre v-if="isAuthenticated">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <UCard v-for="item in data.allRoasters" :key="item.id">
+        <Placeholder class="h-32" />
+
+        <template #footer>
+          <div>{{ item.name }}</div>
+        </template>
+      </UCard>
+    </div>
+  </div>
+  <!-- <pre v-if="isAuthenticated">
       <code>USER: {{ user }}</code>
     </pre>
     <button @click="login">login</button> -->
-    <!-- <p class="flex items-center gap-2">
+  <!-- <p class="flex items-center gap-2">
       Result of <code>https://dummyjson.com/products/</code>
       <UInput type="number" v-model="id" />
     </p>
@@ -69,6 +62,4 @@ const { data: product, pending, error } = await useAsyncData(() => {
     <p v-if="pending">Fetching...</p>
     <pre v-else-if="error">{{ error }}</pre>
     <pre v-else>{{ product }}</pre> -->
-    <NuxtLink class="underline" to="/">Back to Home</NuxtLink>
-  </div>
 </template>

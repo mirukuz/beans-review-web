@@ -1,0 +1,18 @@
+query allRoasters {
+  allRoasters {
+    id
+    name
+    address
+    beans {
+      name
+      process
+      review {
+        content
+        author {
+          id
+          name
+        }
+      }
+    }
+  }
+}
