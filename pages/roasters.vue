@@ -37,13 +37,15 @@ const { data: product, pending, error } = await useAsyncData(() => {
 <template>
   <div class="flex flex-col gap-2">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      <UCard v-for="item in data.allRoasters" :key="item.id">
-        <Placeholder class="h-32" />
+      <NuxtLink v-for="item in data.allRoasters" :key="item.id" :to="`/roaster/${item.id}`">
+        <UCard>
+          <Placeholder class="h-32" />
 
-        <template #footer>
-          <div>{{ item.name }}</div>
-        </template>
-      </UCard>
+          <template #footer>
+            <div>{{ item.name }}</div>
+          </template>
+        </UCard>
+      </NuxtLink>
     </div>
   </div>
   <!-- <pre v-if="isAuthenticated">
