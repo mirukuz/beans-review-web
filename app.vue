@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-vue'
 const auth0 = import.meta.client ? useAuth0() : undefined
 
 const isAuthenticated = computed(() => {
-  return auth0?.isAuthenticated.value || false
+  return !!auth0?.isAuthenticated.value
 })
 
 const user = computed(() => {
@@ -36,6 +36,17 @@ const navLeft = [
     to: '/roasters',
   }
 ]
+watch([isAuthenticated, user], async ([newIsAuthenticated, newUser]) => {
+  if (newIsAuthenticated && newUser?.email && newUser?.name) {
+    await GqlSignupUser({
+      data: {
+        email: newUser?.email,
+        name: newUser?.name,
+        avatar: newUser?.picture
+      }
+    })
+  }
+});
 
 provide('user', user);
 </script>
@@ -54,10 +65,11 @@ provide('user', user);
           <a href="/" class="text-xl font-bold">Bean Reviews</a>
         </div>
         <div class="flex space-x-4">
+          <!-- <UButton @click="logout">Log Out</UButton> -->
           <template v-if="isAuthenticated === null || isAuthenticated === undefined">
             <div>loading...</div>
           </template>
-          <template v-else-if="!isAuthenticated">
+          <template v-else-if="isAuthenticated === false">
             <UButton @click="login">Log In</UButton>
           </template>
           <template v-else>
