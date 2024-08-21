@@ -1,0 +1,13 @@
+mutation createReview(
+    $data: ReviewCreateInput!,
+    $beanId: String!,
+    $authorId: String!
+){
+  createReview(
+    data: $data,
+    beanId: $beanId,
+    authorId: $authorId
+  ) {
+    id
+  }
+}
