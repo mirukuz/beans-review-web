@@ -1,0 +1,11 @@
+query userById($id: String!) {
+  userById(id: $id) {
+    id
+    name
+    email
+    avatar
+    reviews {
+      content
+    }
+  }
+}

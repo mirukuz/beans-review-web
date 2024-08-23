@@ -2,7 +2,6 @@
 import { useAuth0 } from '@auth0/auth0-vue'
 
 const auth0 = import.meta.client ? useAuth0() : undefined
-
 const isAuthenticated = computed(() => {
   return !!auth0?.isAuthenticated.value
 })
@@ -24,6 +23,7 @@ const login = () => {
 
 const logout = () => {
   navigateTo('/')
+  localStorage.removeItem('userId');
   auth0?.logout()
 }
 const navLeft = [
@@ -37,18 +37,19 @@ const navLeft = [
   }
 ]
 watch([isAuthenticated, user], async ([newIsAuthenticated, newUser]) => {
-  if (newIsAuthenticated && newUser?.email && newUser?.name) {
-    await GqlSignupUser({
+  if (!localStorage.getItem('userId') && newIsAuthenticated && newUser?.email && newUser?.name) {
+    const response = await GqlSignupUser({
       data: {
         email: newUser?.email,
         name: newUser?.name,
         avatar: newUser?.picture
       }
     })
+    const userIdVal = response?.signupUser?.id
+    userIdVal && localStorage.setItem('userId', userIdVal);
   }
 });
 
-provide('user', user);
 </script>
 
 <template>
