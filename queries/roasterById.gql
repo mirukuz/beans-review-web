@@ -1,0 +1,17 @@
+query roasterById($id: String!) {
+  roasterById(id: $id) {
+    id
+    name
+    description
+    address
+    country
+    website
+    photo
+    beans {
+      id
+      name
+      photo
+      description
+    }
+  }
+}

@@ -1,0 +1,15 @@
+query beanById($id: String!) {
+  beanById(id: $id) {
+    id
+    name
+    photo
+    description
+    review {
+      id
+      content
+      author {
+        name
+      }
+    }
+  }
+}

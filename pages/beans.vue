@@ -1,37 +1,10 @@
 <script setup lang="ts">
-// import { useAuth0 } from '@auth0/auth0-vue'
-// const id = ref(1)
-// const { isAuthenticated, isLoading, user, loginWithRedirect, logout } = useAuth0()
-// const { data: product, pending, error } = await useFetch(() => `https://dummyjson.com/products/${id.value}`)
-const { data, error, pending, refresh } = await useAsyncGql({
-  operation: 'allBeans',
-  // variables: { limit: 15 },
-  options: {
-    transform: (data) => data,
-  }
-})
+const { data, error } = await useAsyncGql('allBeans')
 
 if (error.value) {
-  // eslint-disable-next-line no-console
   console.error(error.value)
 }
-/* Same as:
-const { data: product, pending, error } = await useAsyncData(() => {
-  return $fetch(`https://dummyjson.com/products/${id.value}`)
-}, {
-  watch: [id]
-})
-*/
-// const login = async () => {
-//   try {
-//     await loginWithRedirect()
-//   } catch (error) {
-//     console.error('Login failed:', error)
-//   }
-// }
-// https://stackoverflow.com/questions/74477187/how-to-implement-auth0-with-nuxt3
 
-// const canDecrease = computed(() => id.value > 1)
 </script>
 
 <template>
