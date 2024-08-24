@@ -3,6 +3,7 @@ query allRoasters {
     id
     name
     address
+    photo
     beans {
       name
       process

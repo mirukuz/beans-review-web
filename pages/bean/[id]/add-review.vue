@@ -6,7 +6,7 @@ const state = reactive({
     content: ""
 })
 const beanId: string = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
-
+const result = ref(null)
 const validate = (state: any): FormError[] => {
     const errors = []
     if (!state.rating) errors.push({ path: 'rating', message: 'Required' })
@@ -16,11 +16,9 @@ const validate = (state: any): FormError[] => {
 
 async function onSubmit(event: FormSubmitEvent<any>) {
     const userId = localStorage.getItem('userId')
-    console.log("beanId", beanId)
-    console.log("userId", userId)
     if (beanId && userId) {
         console.log(event.data)
-        await GqlCreateReview({
+        const { createReview } = await GqlCreateReview({
             data: {
                 rating: Number(state.rating),
                 content: state.content
@@ -28,12 +26,16 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             beanId,
             authorId: userId
         })
+       result.value = createReview
     }
 }
 </script>
 
 <template>
-    <UForm :validate="validate" :state="state" class="space-y-4 mx-auto w-full lg:w-1/2" @submit="onSubmit">
+    <div v-if="result">
+        Request Submit
+    </div>
+    <UForm :validate="validate" :state="state"  v-else class="space-y-4 mx-auto w-full lg:w-1/2" @submit="onSubmit">
 
         <UFormGroup label="Rating" name="rating">
             <URange :step="0.5" :min="0" :max="5" v-model="state.rating" />

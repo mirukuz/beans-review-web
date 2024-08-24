@@ -19,8 +19,7 @@ if (error.value) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <NuxtLink v-for="item in data.allRoasters" :key="item.id" :to="`/roaster/${item.id}`">
         <UCard>
-          <Placeholder class="h-32" />
-
+          <img :src="item.photo" alt="Roaster photo" class="h-32 w-full object-cover rounded-t-lg rounded-b-none" />
           <template #footer>
             <div>{{ item.name }}</div>
           </template>
@@ -28,20 +27,4 @@ if (error.value) {
       </NuxtLink>
     </div>
   </div>
-  <!-- <pre v-if="isAuthenticated">
-      <code>USER: {{ user }}</code>
-    </pre>
-    <button @click="login">login</button> -->
-  <!-- <p class="flex items-center gap-2">
-      Result of <code>https://dummyjson.com/products/</code>
-      <UInput type="number" v-model="id" />
-    </p>
-    <p>
-      <UButton :disabled="!canDecrease" @click="canDecrease ? id-- : null">Previous</UButton>
-      -
-      <UButton @click="id++">Next</UButton>
-    </p>
-    <p v-if="pending">Fetching...</p>
-    <pre v-else-if="error">{{ error }}</pre>
-    <pre v-else>{{ product }}</pre> -->
 </template>
