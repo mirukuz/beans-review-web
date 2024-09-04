@@ -14,10 +14,10 @@
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@nuxt/ui": "^2.18.4",
     "nuxt": "^3.12.4",
-    "nuxt-graphql-client": "^0.2.36",
     "vue": "latest"
   },
   "devDependencies": {
+    "nuxt-graphql-client": "^0.2.36",
     "@nuxt/examples-ui": "latest"
   }
 }
