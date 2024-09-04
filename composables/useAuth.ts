@@ -17,6 +17,10 @@ export function useAuth() {
     return auth0?.user.value
   })
 
+  const email = computed(() => {
+    return auth0?.user.value?.email
+  })
+
   const login = () => {
     auth0?.checkSession()
     if (!auth0?.isAuthenticated.value) {
@@ -31,7 +35,7 @@ export function useAuth() {
   const logout = () => {
     router.push('/')
     localStorage.removeItem('userId')
-    auth0?.logout()
+    auth0?.logout({ logoutParams: { returnTo: window.location.origin } })
   }
 
   watch([isAuthenticated, user], async ([newIsAuthenticated, newUser]) => {
@@ -51,6 +55,7 @@ export function useAuth() {
   return {
     isAuthenticated,
     user,
+    email,
     login,
     logout,
   }

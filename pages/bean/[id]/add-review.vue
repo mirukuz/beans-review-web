@@ -38,7 +38,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
     <UForm :validate="validate" :state="state"  v-else class="space-y-4 mx-auto w-full lg:w-1/2" @submit="onSubmit">
 
         <UFormGroup label="Rating" name="rating">
-            <URange :step="0.5" :min="0" :max="5" v-model="state.rating" />
+            <URange :step="1" :min="0" :max="5" v-model="state.rating" />
         </UFormGroup>
 
         <UFormGroup label="Content" name="content">

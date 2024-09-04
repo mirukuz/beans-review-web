@@ -1,46 +1,69 @@
 <template>
-    <UContainer class="py-4">
-      <nav class="flex justify-between items-center">
-        <div class="flex space-x-4">
-          <div v-for="item in navLeft" :key="item.label">
-            <UButton :to="item.to">{{ item.label }}</UButton>
-          </div>
-        </div>
-        <div class="absolute left-1/2 transform -translate-x-1/2">
-          <a href="/" class="text-xl font-bold">Bean Reviews</a>
-        </div>
-        <div class="flex space-x-4">
-          <template v-if="isAuthenticated === null || isAuthenticated === undefined">
-            <div>loading...</div>
+  <UHeader :links="links">
+    <template #logo>
+      <a href="/" class="text-xl font-bold">☕️</a>
+    </template>
+
+    <template #right>
+        <UDropdown v-if="isAuthenticated" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }"
+          :popper="{ placement: 'bottom-start' }">
+          <UAvatar :src="user?.picture" alt="Avatar" />
+          <template #account="{ item }">
+            <div class="text-left">
+              <p>
+                Signed in as
+              </p>
+              <p class="truncate font-medium text-gray-900 dark:text-white">
+                {{ item.label }}
+              </p>
+            </div>
           </template>
-          <template v-else-if="isAuthenticated === false">
-            <UButton @click="login">Log In</UButton>
+
+          <template #item="{ item }">
+            <span class="truncate">{{ item.label }}</span>
+
+            <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
           </template>
-          <template v-else>
-            <UButton :to="`/bean/new`">Submit new bean!</UButton>
-            <UButton @click="logout">Log Out</UButton>
-            <nuxt-link v-if="user" to="/profile">
-              <UAvatar :src="user?.picture" alt="Avatar" />
-            </nuxt-link>
-          </template>
-        </div>
-      </nav>
-    </UContainer>
-  </template>
-  
-  <script setup lang="ts">
-  import { useAuth } from '~/composables/useAuth'
-  
-  const { isAuthenticated, user, login, logout } = useAuth()
-  
-  const navLeft = [
-    {
-      label: 'Beans',
-      to: '/beans',
-    },
-    {
-      label: 'Roasters',
-      to: '/roasters',
-    },
-  ]
-  </script>
+        </UDropdown>
+        <UButton v-else @click="login">Log In</UButton>
+    </template>
+  </UHeader>
+</template>
+
+<script setup lang="ts">
+import { useAuth } from '~/composables/useAuth'
+
+const { isAuthenticated, user, email, login, logout } = useAuth()
+
+const items = [
+  [{
+    label: email,
+    slot: 'account',
+    disabled: true
+  }], [{
+    label: 'Settings',
+    icon: 'i-heroicons-cog-8-tooth',
+    to: '/settings'
+  }], [{
+    label: 'Sign out',
+    icon: 'i-heroicons-arrow-left-on-rectangle',
+    click: logout
+  }]
+]
+
+const links = [
+  {
+    label: 'Beans',
+    to: '/beans',
+  },
+  {
+    label: 'Roasters',
+    to: '/roasters',
+  },
+  {
+    label: 'Submit new beans',
+    to: '/bean/new',
+  },
+]
+
+</script>
