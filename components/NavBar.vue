@@ -1,5 +1,5 @@
 <template>
-  <UHeader :links="links">
+  <UHeader :links="filteredLinks">
     <template #logo>
       <a href="/" class="text-xl font-bold">☕️</a>
     </template>
@@ -25,7 +25,6 @@
             <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
           </template>
         </UDropdown>
-        <UButton v-else @click="login">Log In</UButton>
     </template>
   </UHeader>
 </template>
@@ -45,13 +44,13 @@ const items = [
     icon: 'i-heroicons-cog-8-tooth',
     to: '/settings'
   }], [{
-    label: 'Sign out',
+    label: 'Log out',
     icon: 'i-heroicons-arrow-left-on-rectangle',
     click: logout
   }]
 ]
 
-const links = [
+const allLinks = ref([
   {
     label: 'Beans',
     to: '/beans',
@@ -64,6 +63,15 @@ const links = [
     label: 'Submit new beans',
     to: '/bean/new',
   },
-]
+  {
+    label: 'Log in',
+    click: login,
+    requiresAuth: true
+  }
+])
+
+const filteredLinks = computed(() => {
+  return allLinks.value.filter(link => !link.requiresAuth || !isAuthenticated.value);
+});
 
 </script>
