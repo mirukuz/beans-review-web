@@ -33,7 +33,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 
 <template>
     <div v-if="result">
-        Request Submit
+        Request Submitted
     </div>
     <UForm :validate="validate" :state="state"  v-else class="space-y-4 mx-auto w-full lg:w-1/2" @submit="onSubmit">
 

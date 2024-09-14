@@ -1,0 +1,9 @@
+mutation createBean(
+    $data: BeanCreateInput!
+){
+  createBean(
+    data: $data
+  ) {
+    id
+  }
+}
