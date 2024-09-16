@@ -1,8 +1,10 @@
 mutation createBean(
-    $data: BeanCreateInput!
+    $data: BeanCreateInput!,
+    $submitterId: String!
 ){
   createBean(
-    data: $data
+    data: $data,
+    submitterId: $submitterId
   ) {
     id
   }
