@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { TastingNote, Process, Origin } from '#gql/default';
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuth } from '~/composables/useAuth'
+const config = useRuntimeConfig();
 
 const { email, isAuthenticated } = useAuth()
 const { data: roasters, error, refresh } = await useAsyncGql({
@@ -77,6 +78,72 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         result.value = createBean
     }
 }
+
+import { ref } from 'vue'
+
+const file = ref(null)
+const uploading = ref(false)
+
+const handleFileChange = (event: { target: { files: any; }; }) => {
+  const files = event.target.files
+  if (files) {
+    file.value = files[0]
+  }
+}
+
+const handleSubmit = async () => {
+  if (!file.value) {
+    alert('Please select a file to upload.')
+    return
+  }
+
+  uploading.value = true
+
+  try {
+    const response = await fetch(
+        config.public.BASE_URL+'/api/upload',
+      {
+        method: 'POST',
+        headers: {
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filename: file.value.name, contentType: file.value.type }),
+      }
+    )
+
+    if (response.ok) {
+      const { url, fields } = await response.json()
+
+      const formData = new FormData()
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value)
+      })
+      formData.append('file', file.value)
+
+      const uploadResponse = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (uploadResponse.ok) {
+        alert('Upload successful!')
+        const imageUrl = `${url}${fields.key}`
+        console.log("uploadResponse", imageUrl)
+      } else {
+        console.error('S3 Upload Error:', uploadResponse)
+        alert('Upload failed.')
+      }
+    } else {
+      alert('Failed to get pre-signed URL.')
+    }
+  } catch (error) {
+    console.error('Upload error:', error)
+    alert('An error occurred during upload.')
+  } finally {
+    uploading.value = false
+  }
+}
 </script>
 
 <template>
@@ -85,6 +152,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     </div>
     <UForm ref="form" :schema="schema" :state="state" v-else class="space-y-4 mx-auto w-full lg:w-1/2"
         @submit="onSubmit">
+        <form @submit.prevent="handleSubmit">
+            <input id="file" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
+            <button type="submit" :disabled="uploading">
+                Upload
+            </button>
+        </form>
         <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" />
         </UFormGroup>
