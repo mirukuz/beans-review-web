@@ -101,11 +101,10 @@ const handleSubmit = async () => {
 
   try {
     const response = await fetch(
-        config.public.BASE_URL+'/api/upload',
+        'https://aws-s3-image-upload-ivory-ten.vercel.app/api/upload',
       {
         method: 'POST',
         headers: {
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ filename: file.value.name, contentType: file.value.type }),
