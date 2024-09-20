@@ -5,7 +5,7 @@ import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuth } from '~/composables/useAuth'
 const config = useRuntimeConfig();
 
-const { email, isAuthenticated } = useAuth()
+const { isAuthenticated } = useAuth()
 const { data: roasters, error, refresh } = await useAsyncGql({
     operation: 'allRoasters',
     options: {
@@ -21,16 +21,17 @@ if (error.value) {
 }
 
 const state = reactive({
+    id: "",
     name: "",
     description: "",
     website: "",
+    photo: "",
     roasterId: undefined,
     tastingNotes: [],
     cannotFindRoaster: false,
     process: undefined,
     origin: undefined,
 })
-
 const result = ref(null)
 const origins = Object.values(Origin);
 const processes = Object.values(Process);
@@ -39,7 +40,9 @@ const tastingNotes = Object.values(TastingNote);
 const isRoasterRequired = computed(() => !state.cannotFindRoaster)
 
 const schema = z.object({
+    id: z.string().nonempty({ message: 'Required' }),
     name: z.string().nonempty({ message: 'Required' }),
+    photo: z.string().url('Invalid URL'),
     description: z.string().nonempty({ message: 'Required' }),
     website: z.string().nonempty({ message: 'Required' }).url('Invalid URL'),
     tastingNotes: z.array(z.nativeEnum(TastingNote)).min(1, { message: 'Required' }),
@@ -65,9 +68,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     if (userId) {
         const { createBean } = await GqlCreateBean({
             data: {
+                id: validatedData.id,
                 name: validatedData.name,
                 description: validatedData.description,
                 website: validatedData.website,
+                photo: validatedData.photo,
                 roasterId: validatedData.roasterId ?? "",
                 tastingNotes: validatedData.tastingNotes,
                 origin: validatedData.origin,
@@ -84,14 +89,15 @@ import { ref } from 'vue'
 const file = ref(null)
 const uploading = ref(false)
 
-const handleFileChange = (event: { target: { files: any; }; }) => {
-  const files = event.target.files
+const handleFileChange = (files: FileList) => {
+  console.log("files",files)
   if (files) {
     file.value = files[0]
+    console.log("file.value",file.value)
   }
 }
 
-const handleSubmit = async () => {
+const handleFileUpload = async () => {
   if (!file.value) {
     alert('Please select a file to upload.')
     return
@@ -101,7 +107,7 @@ const handleSubmit = async () => {
 
   try {
     const response = await fetch(
-        'https://aws-s3-image-upload-ivory-ten.vercel.app/api/upload',
+        config.public.imageServerUrl + '/api/upload',
       {
         method: 'POST',
         headers: {
@@ -112,7 +118,9 @@ const handleSubmit = async () => {
     )
 
     if (response.ok) {
-      const { url, fields } = await response.json()
+      const { url, fields, folderName } = await response.json()
+      console.log("fields", fields)
+      state.id = folderName
 
       const formData = new FormData()
       Object.entries(fields).forEach(([key, value]) => {
@@ -128,6 +136,7 @@ const handleSubmit = async () => {
       if (uploadResponse.ok) {
         alert('Upload successful!')
         const imageUrl = `${url}${fields.key}`
+        state.photo = imageUrl
         console.log("uploadResponse", imageUrl)
       } else {
         console.error('S3 Upload Error:', uploadResponse)
@@ -150,13 +159,15 @@ const handleSubmit = async () => {
         Request Submitted
     </div>
     <UForm ref="form" :schema="schema" :state="state" v-else class="space-y-4 mx-auto w-full lg:w-1/2"
-        @submit="onSubmit">
-        <form @submit.prevent="handleSubmit">
-            <input id="file" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
-            <button type="submit" :disabled="uploading">
-                Upload
-            </button>
-        </form>
+    @submit="onSubmit">
+        <UFormGroup label="Image" name="image">
+            <div class="flex flex-wrap gap-x-4 gap-y-2">
+                <UInput class="flex-1" id="file" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
+                <UButton @click="handleFileUpload" :disabled="uploading || !isAuthenticated">
+                    Upload
+                </UButton>
+            </div>
+        </UFormGroup>
         <UFormGroup label="Name" name="name">
             <UInput v-model="state.name" />
         </UFormGroup>
@@ -168,7 +179,7 @@ const handleSubmit = async () => {
         <UFormGroup label="Website" name="website">
             <UInput v-model="state.website" />
         </UFormGroup>
-        <UFormGroup label="Tasting Note" name="tastingNotes">
+        <UFormGroup label="Tasting Notes" name="tastingNotes">
             <div class="flex flex-wrap gap-x-4 gap-y-2">
                 <UCheckbox v-model="state.tastingNotes" v-for="tastingNote in tastingNotes" :key="tastingNote"
                     :label="tastingNote" :value="tastingNote" />
