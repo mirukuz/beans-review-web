@@ -13,7 +13,7 @@
     </div>
     <div class="flex flex-col text-left">
         <div>Reviews:</div>
-        <div v-for="item in data.beanById.review" :key="item.id">
+        <div v-for="item in data.beanById.reviews" :key="item.id">
             <strong>{{ item.author.name }}</strong> said: "{{ item.content }}"
         </div>
     </div>
