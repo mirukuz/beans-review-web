@@ -31,7 +31,7 @@ import { ref, computed, watchEffect } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 
 const userId = ref(getStoredUserId());
-const { data, error: gqlError } = await fetchUserData(userId);
+const { data, error } = await fetchUserData(userId);
 
 const { isAuthenticated, user, email, login, logout } = useAuth();
 const allLinks = ref([]);
@@ -100,6 +100,6 @@ function updateAllLinks(data, allLinks, login) {
 }
 
 function filterLinks(linksRef, isAuthenticated) {
-  return linksRef.value.filter(link => !link.requiresAuth || isAuthenticated.value);
+  return linksRef.value.filter(link => !link.requiresAuth || !isAuthenticated.value);
 }
 </script>
