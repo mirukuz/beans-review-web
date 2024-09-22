@@ -1,7 +1,8 @@
 <template>
   <UHeader :links="filteredLinks">
     <template #logo>
-      <a href="/" class="text-xl font-bold">{{ logoIcon }}</a>
+      <a href="/" @click="toggleAdmin" class="text-xl font-bold">☕️</a>
+      <a href="/" @click="toggleAdmin" :class="{ hidden: !isAdmin, 'text-xl font-bold': true }">/ 🔧 </a> 
     </template>
 
     <template #right>
@@ -25,81 +26,104 @@
     </template>
   </UHeader>
 </template>
-
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, reactive, watch } from 'vue';
 import { useAuth } from '~/composables/useAuth';
 
+// Reactive state for toggling admin view
+const state = reactive({
+  showAdmin: false,
+});
+
+const toggleAdmin = () => {
+  state.showAdmin = !state.showAdmin;
+};
+
+// Reactive variables for user ID and admin status
 const userId = ref(getStoredUserId());
-const { data, error } = await fetchUserData(userId);
+const isAdmin = ref(false);
 
 const { isAuthenticated, user, email, login, logout } = useAuth();
+
+// Reactive variables for all links and dropdown items
 const allLinks = ref([]);
 const dropdownItems = ref(getDropdownItems(email, logout));
 
+// Placeholder for fetched data and error
+
+
+// Watch for changes in authentication status
+
+const {data, error} = await useAsyncGql('userById', { id: userId });
+
+// Watch for changes in user data to update isAdmin
+watch(
+  () => data.value?.userById?.isAdmin,
+  (newIsAdmin) => {
+    if (newIsAdmin !== undefined) {
+      isAdmin.value = newIsAdmin;
+    }
+  }
+);
+
+// WatchEffect to update all links
 watchEffect(() => {
   updateAllLinks(data, allLinks, login);
 });
 
-const filteredLinks = computed(() => {
-  return filterLinks(allLinks, isAuthenticated);
-});
-
-const logoIcon = computed(() => {
-  return data.value?.userById?.isAdmin ? '🔧' : '☕️';
-});
+const filteredLinks = computed(() => filterLinks(allLinks.value, isAuthenticated));
 
 // Helper Functions
-
 function getStoredUserId() {
-  if (import.meta.client) {
-    return localStorage.getItem('userId');
-  }
-  return null;
-}
-
-async function fetchUserData(userId) {
-  return await useAsyncGql('userById', { id: userId });
+  if (import.meta.env.SSR) return null;
+  return localStorage.getItem('userId');
 }
 
 function getDropdownItems(email, logout) {
   return [
-    [{
-      label: email,
-      slot: 'account',
-      disabled: true
-    }], 
-    [{
-      label: 'Settings',
-      icon: 'i-heroicons-cog-8-tooth',
-      to: '/settings'
-    }], 
-    [{
-      label: 'Log out',
-      icon: 'i-heroicons-arrow-left-on-rectangle',
-      click: logout
-    }]
+    [
+      {
+        label: email,
+        slot: 'account',
+        disabled: true,
+      },
+    ],
+    [
+      {
+        label: 'Settings',
+        icon: 'i-heroicons-cog-8-tooth',
+        to: '/settings',
+      },
+    ],
+    [
+      {
+        label: 'Log out',
+        icon: 'i-heroicons-arrow-left-on-rectangle',
+        click: logout,
+      },
+    ],
   ];
 }
 
 function updateAllLinks(data, allLinks, login) {
-  if (data.value?.userById?.isAdmin) {
+  if (isAdmin.value && state.showAdmin) {
     allLinks.value = [
-      { label: 'Beans', to: '/admin/beans' },
-      { label: 'Roasters', to: '/admin/roasters' },
-      { label: 'Submit new beans', to: '/bean/new' }
+      { label: 'Edit Beans', to: '/admin/beans' },
+      { label: 'Edit Roasters', to: '/admin/roasters' },
+      { label: 'Log in', click: login, requiresAuth: true },
     ];
   } else {
     allLinks.value = [
       { label: 'Beans', to: '/beans' },
       { label: 'Roasters', to: '/roasters' },
       { label: 'Submit new beans', to: '/bean/new' },
-      { label: 'Log in', click: login, requiresAuth: true }
+      { label: 'Log in', click: login, requiresAuth: true },
     ];
   }
 }
 
-function filterLinks(linksRef, isAuthenticated) {
-  return linksRef.value.filter(link => !link.requiresAuth || !isAuthenticated.value);
+function filterLinks(links, isAuthenticated) {
+  return links.filter(link => !link.requiresAuth || !isAuthenticated.value);
 }
+
 </script>
