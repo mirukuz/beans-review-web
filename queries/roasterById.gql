@@ -6,11 +6,11 @@ query roasterById($id: String!) {
     address
     country
     website
-    photo
+    image
     beans {
       id
       name
-      photo
+      image
       description
     }
   }

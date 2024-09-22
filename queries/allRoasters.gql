@@ -3,11 +3,11 @@ query allRoasters {
     id
     name
     address
-    photo
+    image
     beans {
       name
       process
-      review {
+      reviews {
         content
         author {
           id

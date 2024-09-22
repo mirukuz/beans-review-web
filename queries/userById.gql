@@ -4,6 +4,7 @@ query userById($id: String!) {
     name
     email
     avatar
+    isAdmin
     reviews {
       content
     }

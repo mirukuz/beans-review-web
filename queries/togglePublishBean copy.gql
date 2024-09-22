@@ -1,0 +1,5 @@
+mutation togglePublishBean($id: String!){
+  togglePublishBean(id: $id) {
+    id
+  }
+}

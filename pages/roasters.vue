@@ -19,7 +19,7 @@ if (error.value) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <NuxtLink v-for="item in data.allRoasters" :key="item.id" :to="`/roaster/${item.id}`">
         <UCard>
-          <img :src="item.photo" alt="Roaster photo" class="h-32 w-full object-cover rounded-t-lg rounded-b-none" />
+          <img :src="item.image" alt="Roaster image" class="h-32 w-full object-cover rounded-t-lg rounded-b-none" />
           <template #footer>
             <div>{{ item.name }}</div>
           </template>

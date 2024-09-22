@@ -2,8 +2,9 @@ query allBeans {
   allBeans {
     id
     name
-    photo
-    review {
+    image
+    published
+    reviews {
       id
       content
       author {

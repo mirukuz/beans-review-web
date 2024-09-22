@@ -1,0 +1,5 @@
+mutation deleteBean($id: String!){
+  deleteBean(id: $id) {
+    id
+  }
+}

@@ -25,7 +25,7 @@ const state = reactive({
     name: "",
     description: "",
     website: "",
-    photo: "",
+    image: "",
     roasterId: undefined,
     tastingNotes: [],
     cannotFindRoaster: false,
@@ -42,7 +42,7 @@ const isRoasterRequired = computed(() => !state.cannotFindRoaster)
 const schema = z.object({
     id: z.string().nonempty({ message: 'Required' }),
     name: z.string().nonempty({ message: 'Required' }),
-    photo: z.string().url('Invalid URL'),
+    image: z.string().url('Invalid URL'),
     description: z.string().nonempty({ message: 'Required' }),
     website: z.string().nonempty({ message: 'Required' }).url('Invalid URL'),
     tastingNotes: z.array(z.nativeEnum(TastingNote)).min(1, { message: 'Required' }),
@@ -72,7 +72,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 name: validatedData.name,
                 description: validatedData.description,
                 website: validatedData.website,
-                photo: validatedData.photo,
+                image: validatedData.image,
                 roasterId: validatedData.roasterId ?? "",
                 tastingNotes: validatedData.tastingNotes,
                 origin: validatedData.origin,
@@ -136,7 +136,7 @@ const handleFileUpload = async () => {
       if (uploadResponse.ok) {
         alert('Upload successful!')
         const imageUrl = `${url}${fields.key}`
-        state.photo = imageUrl
+        state.image = imageUrl
         console.log("uploadResponse", imageUrl)
       } else {
         console.error('S3 Upload Error:', uploadResponse)

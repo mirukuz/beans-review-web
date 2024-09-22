@@ -8,7 +8,11 @@
             <div>
                 {{ data.beanById.description }}
             </div>
-            <UButton class="self-center mt-4" :to="`/bean/${$route.params.id}/add-review`">Have your say</UButton>
+            <UButton @click="togglePublish" class="self-center mt-4">{{ data.beanById.published ? 'Undo Publishing' :
+                'Approve Publishing' }}
+            </UButton>
+            <UButton @click="deleteBean" class="self-center mt-4">Delete Bean
+            </UButton>
         </div>
     </div>
     <div class="flex flex-col text-left">
@@ -21,10 +25,24 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-//   import Profile from '~/components/Profile.vue';
-//   import Dimension from '~/components/Dimension.vue';
-//   import Reviews from '~/components/Reviews.vue';
-
 const route = useRoute();
+
 const { data, error } = await useAsyncGql('beanById', { id: route.params.id })
+
+const togglePublish = async () => {
+    await GqlTogglePublishBean({
+        id: route.params.id,
+    })
+    await navigateTo('/admin/beans')
+}
+
+const deleteBean = async () => {
+    await GqlDeleteBean({
+        id: route.params.id,
+    })
+    // TODO: delete s3 bucket
+    await navigateTo('/admin/beans')
+
+}
+
 </script>
