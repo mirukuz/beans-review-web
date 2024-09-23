@@ -2,5 +2,9 @@
 </script>
 
 <template>
-  <h1 class="text-4xl font-bold">The Best Bean Review Website</h1>
+  <ULandingSection
+  title="Shout out to beans"
+  description="Join our coffee beans review community, where you can easily explore and discover a wide variety of beans from around the world. Share your thoughts, read reviews, and connect with fellow coffee lovers."
+/>
+
 </template>

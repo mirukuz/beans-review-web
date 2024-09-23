@@ -13,6 +13,7 @@
             </UButton>
             <UButton @click="deleteBean" class="self-center mt-4">Delete Bean
             </UButton>
+            <UButton class="self-center mt-4" :to="`/bean/${data.beanById.id}/details`">Preview</UButton>
         </div>
     </div>
     <div class="flex flex-col text-left">

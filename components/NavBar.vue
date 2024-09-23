@@ -1,8 +1,7 @@
 <template>
   <UHeader :links="filteredLinks">
     <template #logo>
-      <a href="/" @click="toggleAdmin" class="text-xl font-bold">☕️</a>
-      <a href="/" @click="toggleAdmin" :class="{ hidden: !isAdmin, 'text-xl font-bold': true }">/ 🔧 </a> 
+      <a href="/" class="text-xl font-bold">☕️</a>
     </template>
 
     <template #right>
@@ -33,15 +32,6 @@ import { useAuthStore } from '@/store/auth'
 
 const authStore = useAuthStore()
 
-// Reactive state for toggling admin view
-const state = reactive({
-  showAdmin: false,
-});
-
-const toggleAdmin = () => {
-  state.showAdmin = !state.showAdmin;
-};
-
 // Reactive variables for user ID and admin status
 const isAdmin = ref(false);
 const userIdVariable = ref(authStore.userId)
@@ -53,7 +43,7 @@ const dropdownItems = ref(getDropdownItems(email, logout));
 
 const { data, error, refresh, execute } = await useAsyncGql('userById', { id: userIdVariable });
 
-watch( () => authStore.userId, async (newUserId) => {
+watch(() => authStore.userId, async (newUserId) => {
   if (newUserId) {
     userIdVariable.value = newUserId
     await refresh()
@@ -103,8 +93,11 @@ function getDropdownItems(email, logout) {
 }
 
 function updateAllLinks(data, allLinks, login) {
-  if (isAdmin.value && state.showAdmin) {
+  if (isAdmin.value) {
     allLinks.value = [
+      { label: 'Beans', to: '/beans' },
+      { label: 'Roasters', to: '/roasters' },
+      { label: 'Submit new beans', to: '/bean/new' },
       { label: 'Edit Beans', to: '/admin/beans' },
       { label: 'Edit Roasters', to: '/admin/roasters' },
       { label: 'Log in', click: login, requiresAuth: true },
