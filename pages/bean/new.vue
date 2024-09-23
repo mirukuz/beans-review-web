@@ -25,11 +25,11 @@ if (error.value) {
 }
 
 const state = reactive({
-    id: "",
-    name: "",
-    description: "",
-    website: "",
-    image: "",
+    id: undefined,
+    name: undefined,
+    description: undefined,
+    website: undefined,
+    image: undefined,
     roasterId: undefined,
     tastingNotes: [],
     cannotFindRoaster: false,
@@ -41,20 +41,16 @@ const origins = Object.values(Origin);
 const processes = Object.values(Process);
 const tastingNotes = Object.values(TastingNote);
 
-const isRoasterRequired = computed(() => !state.cannotFindRoaster)
-
 const schema = z.object({
-    id: z.string().nonempty({ message: 'Required' }),
-    name: z.string().nonempty({ message: 'Required' }),
+    id: z.string({ message: 'Required' }),
+    name: z.string({ message: 'Required' }),
     image: z.string().url('Invalid URL'),
-    description: z.string().nonempty({ message: 'Required' }),
-    website: z.string().nonempty({ message: 'Required' }).url('Invalid URL'),
+    description: z.string({ message: 'Required' }),
+    website: z.string({ message: 'Required' }).url('Invalid URL'),
     tastingNotes: z.array(z.nativeEnum(TastingNote)).min(1, { message: 'Required' }),
     origin: z.nativeEnum(Origin, { errorMap: () => ({ message: 'Required' }) }),
     process: z.nativeEnum(Process, { errorMap: () => ({ message: 'Required' }) }),
-    roasterId: z.string().optional().refine(value => !isRoasterRequired.value || (value && value !== ""), {
-        message: 'Required'
-    })
+    roasterId: z.string({ message: 'Required' })
 })
 
 type Schema = z.infer<typeof schema>
@@ -89,72 +85,73 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 import { ref } from 'vue'
+const form = ref()
 
 const file = ref(null)
 const uploading = ref(false)
 
 const handleFileChange = (files: FileList) => {
-  console.log("files",files)
-  if (files) {
-    file.value = files[0]
-    console.log("file.value",file.value)
-  }
+    console.log("files", files)
+    if (files) {
+        file.value = files[0]
+        console.log("file.value", file.value)
+    }
 }
 
 const handleFileUpload = async () => {
-  if (!file.value) {
-    alert('Please select a file to upload.')
-    return
-  }
-
-  uploading.value = true
-
-  try {
-    const response = await fetch(
-        config.public.imageServerUrl + '/api/upload',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ filename: file.value.name, contentType: file.value.type }),
-      }
-    )
-
-    if (response.ok) {
-      const { url, fields, folderName } = await response.json()
-      console.log("fields", fields)
-      state.id = folderName
-
-      const formData = new FormData()
-      Object.entries(fields).forEach(([key, value]) => {
-        formData.append(key, value)
-      })
-      formData.append('file', file.value)
-
-      const uploadResponse = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (uploadResponse.ok) {
-        alert('Upload successful!')
-        const imageUrl = `${url}${fields.key}`
-        state.image = imageUrl
-        console.log("uploadResponse", imageUrl)
-      } else {
-        console.error('S3 Upload Error:', uploadResponse)
-        alert('Upload failed.')
-      }
-    } else {
-      alert('Failed to get pre-signed URL.')
+    if (!file.value) {
+        alert('Please select a file to upload.')
+        return
     }
-  } catch (error) {
-    console.error('Upload error:', error)
-    alert('An error occurred during upload.')
-  } finally {
-    uploading.value = false
-  }
+
+    uploading.value = true
+
+    try {
+        const response = await fetch(
+            config.public.imageServerUrl + '/api/upload',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ filename: file.value.name, contentType: file.value.type }),
+            }
+        )
+
+        if (response.ok) {
+            const { url, fields, folderName } = await response.json()
+            state.id = folderName
+
+            const formData = new FormData()
+            Object.entries(fields).forEach(([key, value]) => {
+                formData.append(key, value)
+            })
+            formData.append('file', file.value)
+
+            const uploadResponse = await fetch(url, {
+                method: 'POST',
+                body: formData,
+            })
+
+            if (uploadResponse.ok) {
+                alert('Upload successful!')
+                const imageUrl = `${url}${fields.key}`
+                state.image = imageUrl
+                form.value.validate('image')
+                console.log("uploadResponse", imageUrl)
+            } else {
+                console.error('S3 Upload Error:', uploadResponse)
+                alert('Upload failed.')
+            }
+        } else {
+            alert('Failed to get pre-signed URL.')
+        }
+    } catch (error) {
+        console.error('Upload error:', error)
+        alert('An error occurred during upload.')
+    } finally {
+        uploading.value = false
+    }
 }
 </script>
 
@@ -163,11 +160,11 @@ const handleFileUpload = async () => {
         Request Submitted
     </div>
     <UForm ref="form" :schema="schema" :state="state" v-else class="space-y-4 mx-auto w-full lg:w-1/2"
-    @submit="onSubmit">
-    {{ JSON.stringify(state) }}
+        @submit="onSubmit">
         <UFormGroup label="Image" name="image">
             <div class="flex flex-wrap gap-x-4 gap-y-2">
-                <UInput class="flex-1" id="file" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
+                <UInput class="flex-1" id="file" type="file" @change="handleFileChange"
+                    accept="image/png, image/jpeg" />
                 <UButton @click="handleFileUpload" :disabled="uploading || !isAuthenticated">
                     Upload
                 </UButton>
@@ -200,12 +197,8 @@ const handleFileUpload = async () => {
         </div>
         <div class="space-y-2">
             <UFormGroup label="Roaster" name="roasterId">
-                <USelect v-model="state.roasterId" :options="roasters" :disabled="state.cannotFindRoaster"
-                    placeholder="Select Roaster" />
+                <USelect v-model="state.roasterId" :options="roasters" placeholder="Select Roaster" />
             </UFormGroup>
-            <div class="flex items-center">
-                <UCheckbox v-model="state.cannotFindRoaster" label="Cannot find the roaster" />
-            </div>
         </div>
 
         <div class="flex justify-end">
