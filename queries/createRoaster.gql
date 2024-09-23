@@ -1,0 +1,9 @@
+mutation createRoaster(
+    $data: RoasterCreateInput!,
+){
+  createRoaster(
+    data: $data,
+  ) {
+    id
+  }
+}

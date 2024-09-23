@@ -9,8 +9,9 @@ if (error.value) {
 
 <template>
   <div class="flex flex-col gap-2">
+    <div v-if="data?.allBeans?.length == 0">No Bean Found</div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      <NuxtLink v-for="item in data.allBeans" :key="item.id" :to="`/admin/bean/${item.id}/details`">
+        <NuxtLink v-for="item in data.allBeans" :key="item.id" :to="`/admin/bean/${item.id}/details`">
           <UCard>
           <img :src="item.image" :alt="`Bean image ${item.name}`" class="h-32 w-full object-cover rounded-t-lg rounded-b-none" />
           <template #footer>

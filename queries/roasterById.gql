@@ -7,6 +7,7 @@ query roasterById($id: String!) {
     country
     website
     image
+    published
     beans {
       id
       name

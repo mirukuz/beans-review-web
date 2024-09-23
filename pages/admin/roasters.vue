@@ -16,6 +16,7 @@ if (error.value) {
 
 <template>
   <div class="flex flex-col gap-2">
+    <div v-if="data?.allRoasters?.length == 0">No Roaster Found</div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <NuxtLink v-for="item in data.allRoasters" :key="item.id" :to="`/admin/roaster/${item.id}`">
         <UCard>

@@ -98,6 +98,7 @@ function updateAllLinks(data, allLinks, login) {
       { label: 'Beans', to: '/beans' },
       { label: 'Roasters', to: '/roasters' },
       { label: 'Submit new beans', to: '/bean/new' },
+      { label: 'Submit new roaster', to: '/roaster/new' },
       { label: 'Edit Beans', to: '/admin/beans' },
       { label: 'Edit Roasters', to: '/admin/roasters' },
       { label: 'Log in', click: login, requiresAuth: true },
