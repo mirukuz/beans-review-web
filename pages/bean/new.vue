@@ -3,6 +3,10 @@ import { z } from 'zod'
 import { TastingNote, Process, Origin } from '#gql/default';
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { useAuth } from '~/composables/useAuth'
+import { useAuthStore } from '@/store/auth'
+
+const authStore = useAuthStore()
+
 const config = useRuntimeConfig();
 
 const { isAuthenticated } = useAuth()
@@ -56,7 +60,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    const userId = localStorage.getItem('userId')
+    const userId = authStore.userId
     const validationResult = schema.safeParse(state);
 
     if (!validationResult.success) {

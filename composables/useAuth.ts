@@ -3,11 +3,13 @@
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, watch } from 'vue'
+import { useAuthStore } from '@/store/auth'
 
 export function useAuth() {
   const auth0 = import.meta.client ? useAuth0() : undefined
   const route = useRoute()
   const router = useRouter()
+  const authStore = useAuthStore()
 
   const isAuthenticated = computed(() => {
     return !!auth0?.isAuthenticated.value
@@ -34,12 +36,12 @@ export function useAuth() {
 
   const logout = () => {
     router.push('/')
-    localStorage.removeItem('userId')
+    authStore.setUserId(null)
     auth0?.logout({ logoutParams: { returnTo: window.location.origin } })
   }
 
   watch([isAuthenticated, user], async ([newIsAuthenticated, newUser]) => {
-    if (!localStorage.getItem('userId') && newIsAuthenticated && newUser?.email && newUser?.name) {
+    if (!authStore.userId && newIsAuthenticated && newUser?.email && newUser?.name) {
       const response = await GqlSignupUser({
         data: {
           email: newUser?.email,
@@ -48,7 +50,7 @@ export function useAuth() {
         },
       })
       const userIdVal = response?.signupUser?.id
-      userIdVal && localStorage.setItem('userId', userIdVal)
+      userIdVal && authStore.setUserId(userIdVal)
     }
   })
 

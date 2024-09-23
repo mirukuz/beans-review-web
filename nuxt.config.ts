@@ -18,5 +18,5 @@ export default defineNuxtConfig({
     },
   },
   extends: ['@nuxt/ui-pro'],
-  modules: ["nuxt-graphql-client", "@nuxt/ui"],
+  modules: ["@pinia/nuxt", "nuxt-graphql-client", "@nuxt/ui"],
 });

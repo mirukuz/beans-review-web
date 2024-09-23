@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
+import { useAuthStore } from '@/store/auth'
+
+const authStore = useAuthStore()
 const route = useRoute()
 const state = reactive({
     rating: 5,
@@ -15,8 +18,7 @@ const validate = (state: any): FormError[] => {
 }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
-    const userId = localStorage.getItem('userId')
-    if (beanId && userId) {
+    if (beanId && authStore.userId) {
         console.log(event.data)
         const { createReview } = await GqlCreateReview({
             data: {
@@ -24,7 +26,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
                 content: state.content
             },
             beanId,
-            authorId: userId
+            authorId: authStore.userId
         })
        result.value = createReview
     }

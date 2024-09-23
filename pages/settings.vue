@@ -1,13 +1,10 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/store/auth'
 
-let userId = ref(null)
-if (import.meta.client) {
-    const storedUserId = localStorage.getItem('userId')
-    userId.value = storedUserId
-}
+const authStore = useAuthStore()
 
 const { data: user, error: gqlError } = await useAsyncGql(
-    'userById', { id: userId }
+    'userById', { id: authStore.userId }
 )
 
 </script>

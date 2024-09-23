@@ -29,6 +29,9 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect, reactive, watch } from 'vue';
 import { useAuth } from '~/composables/useAuth';
+import { useAuthStore } from '@/store/auth'
+
+const authStore = useAuthStore()
 
 // Reactive state for toggling admin view
 const state = reactive({
@@ -40,22 +43,22 @@ const toggleAdmin = () => {
 };
 
 // Reactive variables for user ID and admin status
-const userId = ref(getStoredUserId());
 const isAdmin = ref(false);
-
+const userIdVariable = ref(authStore.userId)
 const { isAuthenticated, user, email, login, logout } = useAuth();
 
 // Reactive variables for all links and dropdown items
 const allLinks = ref([]);
 const dropdownItems = ref(getDropdownItems(email, logout));
 
-// Placeholder for fetched data and error
+const { data, error, refresh, execute } = await useAsyncGql('userById', { id: userIdVariable });
 
-
-// Watch for changes in authentication status
-
-const {data, error} = await useAsyncGql('userById', { id: userId });
-
+watch( () => authStore.userId, async (newUserId) => {
+  if (newUserId) {
+    userIdVariable.value = newUserId
+    await refresh()
+  }
+})
 // Watch for changes in user data to update isAdmin
 watch(
   () => data.value?.userById?.isAdmin,
@@ -72,12 +75,6 @@ watchEffect(() => {
 });
 
 const filteredLinks = computed(() => filterLinks(allLinks.value, isAuthenticated));
-
-// Helper Functions
-function getStoredUserId() {
-  if (import.meta.env.SSR) return null;
-  return localStorage.getItem('userId');
-}
 
 function getDropdownItems(email, logout) {
   return [
