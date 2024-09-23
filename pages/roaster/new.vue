@@ -67,6 +67,7 @@ import { ref } from 'vue'
 
 const file = ref(null)
 const uploading = ref(false)
+const form = ref()
 
 const handleFileChange = (files: FileList) => {
   console.log("files",files)
@@ -115,6 +116,7 @@ const handleFileUpload = async () => {
         alert('Upload successful!')
         const imageUrl = `${url}${fields.key}`
         state.image = imageUrl
+        form.value.validate('image')
         console.log("uploadResponse", imageUrl)
       } else {
         console.error('S3 Upload Error:', uploadResponse)
