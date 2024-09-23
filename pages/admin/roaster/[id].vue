@@ -3,16 +3,22 @@
         <div class="md:w-1/2">
             <img :src="data.roasterById.image" :alt="`Roaster image ${data.roasterById.name}`" class="w-full h-auto" />
         </div>
-        <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col">
-            <h1> {{ data.roasterById.name }} </h1>
+        <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col text-left">
+            <h1 class="text-center text-2xl"> {{ data.roasterById.name }} </h1>
             <div>
-                {{ data.roasterById.description }}
+                <b>description:</b> {{ data.roasterById.description }}
             </div>
+            <div>
+                <b>origin:</b> {{ data.roasterById.country }}
+            </div>
+            <div class="flex gap-4">
             <UButton @click="togglePublish" class="self-center mt-4">{{ data.roasterById.published ? 'Undo Publishing' :
                 'Approve Publishing' }}
             </UButton>
             <UButton @click="deleteRoaster" class="self-center mt-4">Delete Roaster
             </UButton>
+            <UButton class="self-center mt-4" :to="`/roaster/${data.roasterById.id}`">Preview</UButton>
+        </div>
         </div>
     </div>
 </template>

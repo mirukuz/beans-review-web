@@ -5,11 +5,20 @@ query beanById($id: String!) {
     image
     description
     published
+    process
+    origin
+    tastingNotes
+    website
+    roaster {
+      id
+      name
+    }
     reviews {
       id
       content
       author {
         name
+        avatar
       }
     }
   }

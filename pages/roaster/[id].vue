@@ -3,10 +3,13 @@
     <div class="md:w-1/2">
       <img :src="data.roasterById.image" :alt="`Roaster image ${data.roasterById.name}`" class="w-full h-auto" />
     </div>
-    <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col">
-      <h1> {{ data.roasterById.name }} </h1>
+    <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col text-left">
+      <h1 class="text-center text-2xl"> {{ data.roasterById.name }} </h1>
       <div>
-        {{ data.roasterById.description }}
+        <b>Description:</b> {{ data.roasterById.description }}
+      </div>
+      <div>
+        <b>Country:</b> {{ data.roasterById.country }}
       </div>
     </div>
   </div>
