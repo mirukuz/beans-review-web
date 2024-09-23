@@ -1,0 +1,5 @@
+mutation togglePublishRoaster($id: String!){
+  togglePublishRoaster(id: $id) {
+    id
+  }
+}

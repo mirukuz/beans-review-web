@@ -1,5 +1,5 @@
-query allRoasters {
-  allRoasters {
+query allPublishedRoasters {
+  allPublishedRoasters {
     id
     name
     address

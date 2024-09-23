@@ -1,0 +1,5 @@
+mutation deleteRoaster($id: String!){
+  deleteRoaster(id: $id) {
+    id
+  }
+}
