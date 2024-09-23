@@ -108,10 +108,7 @@ function updateAllLinks(data, allLinks, login) {
       { label: 'Beans', to: '/beans' },
       { label: 'Roasters', to: '/roasters' },
       { label: 'Submit new beans', to: '/bean/new' },
-      { label: 'Log in', click: () => {
-        console.log("auth", user)
-        login()
-      }, requiresAuth: true },
+      { label: 'Log in', click: login, requiresAuth: true },
     ];
   }
 }
