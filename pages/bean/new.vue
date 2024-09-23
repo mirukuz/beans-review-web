@@ -164,6 +164,7 @@ const handleFileUpload = async () => {
     </div>
     <UForm ref="form" :schema="schema" :state="state" v-else class="space-y-4 mx-auto w-full lg:w-1/2"
     @submit="onSubmit">
+    {{ JSON.stringify(state) }}
         <UFormGroup label="Image" name="image">
             <div class="flex flex-wrap gap-x-4 gap-y-2">
                 <UInput class="flex-1" id="file" type="file" @change="handleFileChange" accept="image/png, image/jpeg" />
