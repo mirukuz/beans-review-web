@@ -1,0 +1,5 @@
+mutation toggleUserAdmin($id: String!){
+  toggleUserAdmin(id: $id) {
+    id
+  }
+}

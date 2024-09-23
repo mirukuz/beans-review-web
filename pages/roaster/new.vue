@@ -21,19 +21,16 @@ const state = reactive({
     country: ""
 })
 const result = ref(null)
-const origins = Object.values(Origin);
-const processes = Object.values(Process);
-const tastingNotes = Object.values(TastingNote);
 
 
 const schema = z.object({
-    id: z.string().nonempty({ message: 'Required' }),
-    name: z.string().nonempty({ message: 'Required' }),
+    id: z.string({ message: 'Required' }),
+    name: z.string({ message: 'Required' }),
     image: z.string().url('Invalid URL'),
-    description: z.string().nonempty({ message: 'Required' }),
+    description: z.string({ message: 'Required' }),
     website: z.string(),
     address: z.string(),
-    country: z.string().nonempty({ message: 'Required' }),
+    country: z.string({ message: 'Required' }),
 })
 
 type Schema = z.infer<typeof schema>
@@ -73,7 +70,6 @@ const handleFileChange = (files: FileList) => {
   console.log("files",files)
   if (files) {
     file.value = files[0]
-    console.log("file.value",file.value)
   }
 }
 
