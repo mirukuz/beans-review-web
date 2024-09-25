@@ -2,7 +2,7 @@ query allPublishedBeans {
   allPublishedBeans {
     id
     name
-    image
+    images
     reviews {
       id
       content

@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col md:flex-row mb-12">
         <div class="md:w-1/2">
-            <img :src="data.roasterById.image" :alt="`Roaster image ${data.roasterById.name}`" class="w-full h-auto" />
+            <img :src="data.roasterById.images?.[0]" :alt="`Roaster image ${data.roasterById.name}`" class="w-full h-auto" />
         </div>
         <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col text-left">
             <h1 class="text-center text-2xl"> {{ data.roasterById.name }} </h1>

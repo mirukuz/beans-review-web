@@ -12,13 +12,13 @@ const config = useRuntimeConfig();
 const { isAuthenticated } = useAuth()
 
 const state = reactive({
-    id: "",
-    name: "",
-    description: "",
-    website: "",
-    image: "",
-    address: "",
-    country: ""
+    id: undefined,
+    name: undefined,
+    description: undefined,
+    website: undefined,
+    images: [],
+    address: undefined,
+    country: undefined
 })
 const result = ref(null)
 
@@ -26,7 +26,7 @@ const result = ref(null)
 const schema = z.object({
     id: z.string({ message: 'Required' }),
     name: z.string({ message: 'Required' }),
-    image: z.string().url('Invalid URL'),
+    images: z.array(z.string().url('Invalid URL')),
     description: z.string({ message: 'Required' }),
     website: z.string(),
     address: z.string(),
@@ -53,7 +53,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 description: validatedData.description,
                 website: validatedData.website,
                 country: validatedData.country,
-                image: validatedData.image,
+                images: validatedData.images,
             },
         })
         result.value = createRoaster
@@ -111,7 +111,7 @@ const handleFileUpload = async () => {
       if (uploadResponse.ok) {
         alert('Upload successful!')
         const imageUrl = `${url}${fields.key}`
-        state.image = imageUrl
+        state.images = [imageUrl]
         form.value.validate('image')
         console.log("uploadResponse", imageUrl)
       } else {

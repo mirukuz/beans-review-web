@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col md:flex-row mb-12">
         <div class="md:w-1/2">
-            <img :src="data.beanById.image" :alt="`Bean image ${data.beanById.name}`" class="w-full h-auto" />
+            <img :src="data.beanById.images?.[0]" :alt="`Bean image ${data.beanById.name}`" class="w-full h-auto" />
         </div>
         <div class="md:w-1/2 md:pl-4 mt-4 md:mt-0 flex flex-col text-left">
             <h1 class="text-center text-2xl"> {{ data.beanById.name }} </h1>

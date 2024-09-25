@@ -2,7 +2,7 @@ query allBeans {
   allBeans {
     id
     name
-    image
+    images
     published
     reviews {
       id

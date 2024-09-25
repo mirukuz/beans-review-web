@@ -29,7 +29,7 @@ const state = reactive({
     name: undefined,
     description: undefined,
     website: undefined,
-    image: undefined,
+    images: [],
     roasterId: undefined,
     tastingNotes: [],
     cannotFindRoaster: false,
@@ -44,7 +44,7 @@ const tastingNotes = Object.values(TastingNote);
 const schema = z.object({
     id: z.string({ message: 'Required' }),
     name: z.string({ message: 'Required' }),
-    image: z.string().url('Invalid URL'),
+    images: z.array(z.string().url('Invalid URL')),
     description: z.string({ message: 'Required' }),
     website: z.string({ message: 'Required' }).url('Invalid URL'),
     tastingNotes: z.array(z.nativeEnum(TastingNote)).min(1, { message: 'Required' }),
@@ -72,7 +72,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 name: validatedData.name,
                 description: validatedData.description,
                 website: validatedData.website,
-                image: validatedData.image,
+                images: validatedData.images,
                 roasterId: validatedData.roasterId ?? "",
                 tastingNotes: validatedData.tastingNotes,
                 origin: validatedData.origin,
@@ -136,7 +136,7 @@ const handleFileUpload = async () => {
             if (uploadResponse.ok) {
                 alert('Upload successful!')
                 const imageUrl = `${url}${fields.key}`
-                state.image = imageUrl
+                state.images = [imageUrl]
                 form.value.validate('image')
                 console.log("uploadResponse", imageUrl)
             } else {

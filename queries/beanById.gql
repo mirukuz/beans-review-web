@@ -2,7 +2,7 @@ query beanById($id: String!) {
   beanById(id: $id) {
     id
     name
-    image
+    images
     description
     published
     process

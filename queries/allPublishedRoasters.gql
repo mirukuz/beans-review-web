@@ -3,7 +3,7 @@ query allPublishedRoasters {
     id
     name
     address
-    image
+    images
     published
     beans {
       name
