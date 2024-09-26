@@ -18,6 +18,9 @@
                 <b>TastingNotes:</b> {{ data.beanById.tastingNotes }}
             </div>
             <div>
+                <b>Roaster:</b> {{ data.beanById.roaster?.name }}
+            </div>
+            <div>
                 <b>Website:</b> {{ data.beanById.website }}
             </div>
             <div class="flex gap-4">
