@@ -1,0 +1,11 @@
+mutation udpateBean(
+    $id: String!,
+    $data: BeanCreateInput!
+){
+  updateBean(
+    id: $id
+    data: $data,
+  ) {
+    id
+  }
+}

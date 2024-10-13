@@ -11,9 +11,9 @@ const config = useRuntimeConfig();
 
 const { isAuthenticated } = useAuth()
 const { data: roasters, error, refresh } = await useAsyncGql({
-    operation: 'allRoasters',
+    operation: 'allPublishedRoasters',
     options: {
-        transform: (data) => data.allRoasters?.map(ar => ({
+        transform: (data) => data.allPublishedRoasters?.map(ar => ({
             label: ar.name,
             value: ar.id
         })),
